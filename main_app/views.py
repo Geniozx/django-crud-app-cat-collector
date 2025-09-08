@@ -37,3 +37,6 @@ cats = [
 def cat_index(request):
     # Render the cats/index.html template with the cats data
     return render(request, 'cats/index.html', {'cats': cats})
+
+def home(request):
+    return render(request, 'home.html')
