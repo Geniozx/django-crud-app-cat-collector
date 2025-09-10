@@ -59,16 +59,7 @@ class CatDelete(DeleteView):
     model = Cat
     success_url = '/cats/'
 
-class Feeding(models.Model):
-    # Other Feeding model items above
-    
-    def __str__(self):
-        # Nice method for obtaining the friendly value of a Field.choice
-        return f"{self.get_meal_display()} on {self.date}"
 
-    # Define the default order of feedings
-    class Meta:
-        ordering = ['-date']  # This line makes the newest feedings appear first
 
 
     
