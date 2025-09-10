@@ -1,9 +1,11 @@
 # main_app/views.py
 
-from django.shortcuts import render
-# Add the following import
-from django.views.generic.edit import CreateView
+from django.shortcuts import render, redirect
+# Add the following import  # Add UdpateView & DeleteView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from .models import Cat
+# Import the FeedingForm
+from .forms import FeedingForm
 
 
 # Define the home view function
@@ -21,13 +23,54 @@ def cat_index(request):
 
 # views.py
 
+# update this view function
 def cat_detail(request, cat_id):
     cat = Cat.objects.get(id=cat_id)
-    return render(request, 'cats/detail.html', {'cat': cat})
+    # instantiate FeedingForm to be rendered in the template
+    feeding_form = FeedingForm()
+    return render(request, 'cats/detail.html', {
+        # include the cat and feeding_form in the context
+        'cat': cat, 'feeding_form': feeding_form
+    })
+
+def add_feeding(request, cat_id):
+    # create a ModelForm instance using the data in request.POST
+    form = FeedingForm(request.POST)
+    # validate the form
+    if form.is_valid():
+        # don't save the form to the db until it
+        # has the cat_id assigned
+        new_feeding = form.save(commit=False)
+        new_feeding.cat_id = cat_id
+        new_feeding.save()
+    return redirect('cat-detail', cat_id=cat_id)
+
 
 class CatCreate(CreateView):
     model = Cat
     fields = '__all__'
+    
+class CatUpdate(UpdateView):
+    model = Cat
+    # Let's disallow the renaming of a cat by excluding the name field!
+    fields = ['breed', 'description', 'age']
+
+class CatDelete(DeleteView):
+    model = Cat
+    success_url = '/cats/'
+
+class Feeding(models.Model):
+    # Other Feeding model items above
+    
+    def __str__(self):
+        # Nice method for obtaining the friendly value of a Field.choice
+        return f"{self.get_meal_display()} on {self.date}"
+
+    # Define the default order of feedings
+    class Meta:
+        ordering = ['-date']  # This line makes the newest feedings appear first
+
+
     
 
 
