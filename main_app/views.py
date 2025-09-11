@@ -3,7 +3,7 @@
 from django.shortcuts import render, redirect
 # Add the following import  # Add UdpateView & DeleteView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from .models import Cat
+from .models import Cat, Toy
 # Import the FeedingForm
 from .forms import FeedingForm
 
@@ -59,7 +59,9 @@ class CatDelete(DeleteView):
     model = Cat
     success_url = '/cats/'
 
-
+class ToyCreate(CreateView):
+    model = Toy
+    fields = '__all__'
 
 
     
